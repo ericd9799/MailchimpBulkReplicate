@@ -1,0 +1,2 @@
+CampaignToDuplicate,CampaignTitle,SubjectLine,FromName,ReplyTo,ListName,ScheduleDateTime
+<Name of Campaign To Replicate>,<Name of Replicated Campaign>,<Subject Line for Replicated Campaign>,<Replicated Campaign Sender Name>,<Campaign Reply To Email>,<Recipient List Name>,<Scheduled Date Time>
