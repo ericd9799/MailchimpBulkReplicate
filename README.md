@@ -1,4 +1,4 @@
-# Mailchimp Campaign Replication
+# Mailchimp Campaign Bulk Replication
 
 This Python script enables bulk replication of Mailchimp campaigns. 
 
