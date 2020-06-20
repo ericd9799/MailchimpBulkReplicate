@@ -1,23 +1,26 @@
 # Mailchimp Campaign Bulk Replication
+This Python script allows for easy and repetitive bulk replication of Mailchimp campaigns. 
 
-This Python script enables bulk replication of Mailchimp campaigns. 
+The driver for this script can either be a CSV or Excel file where details for replicating a campaign is provided.
 
-The driver for this script is a CSV file where user(s) will provide details about which campaign to replicate, and the configurations of the replicated campaign(s).
-
-As of now, the following information will be updated in the repliated campaign:
+As of now, the following information will be updated in the replicated campaign:
 * Campaign Title
 * Campaign Subject Line
 * Campaign Sender Name
 * Campaign Reply To Email
 * Campaign Recipient List
+* Replicated campaign will be scheduled
 
-The campaign can be scheduled, but that portion of the code is currently removed.
+To aid in troubleshooting, a log file is generated every run.
 
-If the code for scheduling the campaign is enabled, the schedule date / time must follow the format *M/DD/YYYY HH:MM AM|PM*.
+# Source File
+As mentioned CSV or Excel can be supplied to the application. The application now allows the user to select and upload their file.
 
-To aid in troubleshooting, a log file is generated every run. Multiple runs in a day will append to the exisiting log file created for the day.
+Please see example below for content expected in file. Also, headers are expected in the file.
+
+|CampaignToDuplicate|CampaignTitle|SubjectLine|FromName|ReplyTo|ListName|ScheduleDateTime|
+|-------------------|:-----------:|:---------:|:------:|:-----:|:------:|---------------:|
+|Test Campaign      |My Campaign Title|My Subject Line|John Smith|jsmit@example.com|Audience List Name|MM/DD/YYYY HH:MI AM/PM|
 
 # Set Up
 An Mailchimp API key will need to be created. For details on how to generate an API key, checkout Mailchimp's [tutorial](https://mailchimp.com/help/about-api-keys/).
-
-A CSV file, MailChimpDuplicate.csv, will need to be created -- see example in *Source* folder.
