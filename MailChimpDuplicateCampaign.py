@@ -11,22 +11,34 @@ import config
 print(dt.datetime.now().strftime("%m/%d/%Y %I:%M:%S %p") + " - Running")
 
 logFile = 'MailChimp_Campaign_Log_'+dt.datetime.now().strftime("%m%d%Y")+'.log'
-logging.basicConfig(filename=os.path.expanduser('~')+'\\Desktop\\MailChimp\\Logs\\'+logFile, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", datefmt="%m/%d/%Y %I:%M:%S %p", filemode='w', level=logging.INFO)
+logging.basicConfig(filename=os.path.expanduser('~')+'\\Desktop\\MailChimp_Scheduler\\Logs\\'+logFile, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", datefmt="%m/%d/%Y %I:%M:%S %p", filemode='w', level=logging.INFO)
 
 logger = logging.getLogger(__name__)
-fileHandler = logging.FileHandler(filename=os.path.expanduser('~')+'\\Desktop\\MailChimp\\Logs\\'+logFile)
+fileHandler = logging.FileHandler(filename=os.path.expanduser('~')+'\\Desktop\\MailChimp_Scheduler\\Logs\\'+logFile)
 logger.addHandler(fileHandler)
 
 try:
-    df = pd.read_csv(os.path.expanduser('~')+'\\Desktop\\MailChimp\\Source\\MailChimpDuplicate.csv')
+    config = pd.read_csv(os.path.expanduser('~')+'\\Desktop\\MailChimp_Scheduler\\Source\\config.csv', sep=',')
 except FileNotFoundError as e:
     logger.error(str(e))
+except Exception as e:
+	logger.error(str(e))
 else:
-    logger.info("CSV opened and read.")
+    logger.info("Config opened and read.")
 
-client = MailChimp(mc_api=config.MailChimpAPIKey, mc_user=config.MailChimpUser)
 
-# Retrieve all list/audience
+try:
+    df = pd.read_csv(os.path.expanduser('~')+'\\Desktop\\MailChimp_Scheduler\\Source\\MailChimpDuplicate.csv', sep=',', encoding = "ISO-8859-1")
+except FileNotFoundError as e:
+    logger.error(str(e))
+except Exception as e:
+	logger.error(str(e))
+else:
+    logger.info("Source CSV opened and read.")
+
+client = MailChimp(mc_api=config['MailChimpAPIKey'][0], mc_user=config['MailChimpUser'][0])
+
+# Retrieve list/audience within MailChimp
 try:
     audience = client.lists.all(get_all=True, fields="lists.name,lists.id")
 except Exception as e:
@@ -99,7 +111,6 @@ for x in range(len(df)):
         logger.info("Settings and recipients update successful.")
 		
 	# Remove below code for initial release to allow quality checking
-	'''
     # Convert time to UTC to schedule campaign
     scheduleDateTime = df.iloc[x]['ScheduleDateTime']
     unawareTimeZone = dt.datetime.strptime(scheduleDateTime, "%m/%d/%Y %I:%M %p")
@@ -120,8 +131,7 @@ for x in range(len(df)):
         raise
     else:
         logger.info("Update campaign schedule successful.")
-	'''
-	
+
     logger.info("=====End: "+df.iloc[x]['CampaignTitle']+"=====")
 
 print(dt.datetime.now().strftime("%m/%d/%Y %I:%M:%S %p") + " - Complete")
