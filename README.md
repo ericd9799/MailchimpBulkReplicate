@@ -16,11 +16,11 @@ To aid in troubleshooting, a log file is generated every run.
 # Source File
 As mentioned CSV or Excel can be supplied to the application. The application now allows the user to select and upload their file.
 
-Please see example below for content expected in file. Also, headers are expected in the file.
+Please see example below for content expected in file. Also, headers are expected in the file. The schedule date and time **must** be in MM/DD/YYYY HH:MI AM/PM format.
 
 |CampaignToDuplicate|CampaignTitle|SubjectLine|FromName|ReplyTo|ListName|ScheduleDateTime|
-|-------------------|:-----------:|:---------:|:------:|:-----:|:------:|---------------:|
-|Test Campaign      |My Campaign Title|My Subject Line|John Smith|jsmit@example.com|Audience List Name|MM/DD/YYYY HH:MI AM/PM|
+|-------------------|-------------|-----------|--------|-------|--------|----------------|
+|Dummy Campaign To Duplicate|My Campaign Title|My Subject Line|John Smith|jsmit@example.com|Audience List Name|MM/DD/YYYY HH:MI AM/PM|
 
 # Set Up
 An Mailchimp API key will need to be created. For details on how to generate an API key, checkout Mailchimp's [tutorial](https://mailchimp.com/help/about-api-keys/).
