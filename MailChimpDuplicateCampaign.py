@@ -6,10 +6,20 @@ import pytz
 import datetime as dt
 import logging
 import os
-import config
+import tkinter as tk
+from tkinter import filedialog as fd
 
 print(dt.datetime.now().strftime("%m/%d/%Y %I:%M:%S %p") + " - Running")
 
+root = tk.Tk()
+root.withdraw()
+
+# Allow users to select file to process
+selectFile = fd.askopenfilename(title="Select File to Duplicate MailChimp Campaign", initialdir=os.path.expanduser('~')+'\\Desktop\\', filetypes=[("CSV", ".csv"),("Excel", ".xlsx .xls")])
+
+selFileName, selFileExt = os.path.splitext(selectFile)
+
+# Create log file
 logFile = 'MailChimp_Campaign_Log_'+dt.datetime.now().strftime("%m%d%Y")+'.log'
 logging.basicConfig(filename=os.path.expanduser('~')+'\\Desktop\\MailChimp_Scheduler\\Logs\\'+logFile, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", datefmt="%m/%d/%Y %I:%M:%S %p", filemode='w', level=logging.INFO)
 
@@ -17,6 +27,7 @@ logger = logging.getLogger(__name__)
 fileHandler = logging.FileHandler(filename=os.path.expanduser('~')+'\\Desktop\\MailChimp_Scheduler\\Logs\\'+logFile)
 logger.addHandler(fileHandler)
 
+# Reading config to retrieve username and API key
 try:
     config = pd.read_csv(os.path.expanduser('~')+'\\Desktop\\MailChimp_Scheduler\\Source\\config.csv', sep=',')
 except FileNotFoundError as e:
@@ -26,16 +37,27 @@ except Exception as e:
 else:
     logger.info("Config opened and read.")
 
+if selFileExt.upper() == '.CSV':
+	try:
+		#df = pd.read_csv(os.path.expanduser('~')+'\\Desktop\\MailChimp_Scheduler\\Source\\MailChimpDuplicate.csv', sep=',', encoding = "ISO-8859-1")
+		df = pd.read_csv(selectFile, sep=',', encoding = "ISO-8859-1")
+	except FileNotFoundError as e:
+		logger.error(str(e))
+	except Exception as e:
+		logger.error(str(e))
+	else:
+		logger.info(f"Source CSV, {selFileName}, opened and read.")
+elif selFileExt.upper() in [".XLSX", ".XLS"]:
+	try:
+		df = pd.read_excel(selectFile)
+	except FileNotFoundError as e:
+		logger.error(str(e))
+	except Exception as e:
+		logger.error(str(e))
+	else:
+		logger.info(f"Source Excel, {selFileName}, opened and read.")
 
-try:
-    df = pd.read_csv(os.path.expanduser('~')+'\\Desktop\\MailChimp_Scheduler\\Source\\MailChimpDuplicate.csv', sep=',', encoding = "ISO-8859-1")
-except FileNotFoundError as e:
-    logger.error(str(e))
-except Exception as e:
-	logger.error(str(e))
-else:
-    logger.info("Source CSV opened and read.")
-
+# Access MailChimp
 client = MailChimp(mc_api=config['MailChimpAPIKey'][0], mc_user=config['MailChimpUser'][0])
 
 # Retrieve list/audience within MailChimp
